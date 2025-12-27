@@ -8,46 +8,36 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from tkcalendar import DateEntry
 
-# --- FUTURISTIC THEME CONFIG ---
+
 ctk.set_appearance_mode("Dark")
-ACCENT_COLOR = "#38BDF8"  # Neon Blue
-BG_COLOR = "#0F172A"      # Deep Navy
-CARD_COLOR = "#1E293B"    # Slate Blue
-SUCCESS_COLOR = "#10B981" # Emerald
-ERROR_COLOR = "#F43F5E"   # Rose Red
+ACCENT_COLOR = "#38BDF8"  
+BG_COLOR = "#0F172A"     
+CARD_COLOR = "#1E293B"    
+SUCCESS_COLOR = "#10B981" 
+ERROR_COLOR = "#F43F5E"   
 
 class ModernFinancePro(ctk.CTk):
     def __init__(self):
         super().__init__()
 
-        # Window Setup
+        
         self.title("NEURAL FINANCE • PRO")
         self.geometry("1200x800")
-        self.configure(fg_color=BG_COLOR)
-        
-        # Files
+        self.configure(fg_color=BG_COLOR)    
         self.data_file = "data.json"
-        self.settings_file = "settings.json"
-        
-        # Initialize Logic (preserving all previous logic)
+        self.settings_file = "settings.json"   
         self.records = self.load_data()
         self.settings = self.load_settings()
         self.currency = self.settings.get("currency", "$")
         self.process_recurring()
-
-        # --- MODERN LAYOUT ---
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)
-
-        # Futuristic Sidebar
         self.sidebar = ctk.CTkFrame(self, width=240, fg_color="#020617", corner_radius=0)
         self.sidebar.grid(row=0, column=0, sticky="nsew")
-        
-        # Logo with a "Glow" effect style
         self.logo_label = ctk.CTkLabel(self.sidebar, text="NEURAL\nFINANCE", font=("Impact", 24, "bold"), text_color=ACCENT_COLOR)
         self.logo_label.pack(pady=(40, 40))
 
-        # Nav Buttons (Styled to look like glass tabs)
+        
         self.create_nav_btn("Dashboard", self.show_dashboard)
         self.create_nav_btn("Add Transaction", self.show_add_form)
         self.create_nav_btn("History", self.show_history)
@@ -55,21 +45,21 @@ class ModernFinancePro(ctk.CTk):
         self.create_nav_btn("Monthly Budgets", self.show_budgets)
         self.create_nav_btn("Settings", self.show_settings)
 
-        # Main Content Area
+        
         self.main_frame = ctk.CTkScrollableFrame(self, fg_color="transparent", corner_radius=15)
         self.main_frame.grid(row=0, column=1, padx=30, pady=30, sticky="nsew")
         
         self.show_dashboard()
 
     def create_nav_btn(self, text, command):
-        # Changed "medium" to "bold" to fix the TclError
+       
         btn = ctk.CTkButton(self.sidebar, text=text, command=command, 
                             height=45, fg_color="transparent", 
                             text_color="white", hover_color=CARD_COLOR,
                             anchor="w", font=("Segoe UI", 14, "bold")) 
         btn.pack(pady=5, padx=20, fill="x")
 
-    # --- LOGIC (NO CHANGES MADE) ---
+   
     def load_data(self):
         if not os.path.exists(self.data_file): return []
         with open(self.data_file, 'r') as f:
@@ -104,7 +94,7 @@ class ModernFinancePro(ctk.CTk):
                 updated = True
         if updated: self.save_data(); self.save_settings()
 
-    # --- MODERN UI RENDERING ---
+    
     def clear_frame(self):
         for widget in self.main_frame.winfo_children(): widget.destroy()
 
@@ -114,11 +104,11 @@ class ModernFinancePro(ctk.CTk):
         inc = sum(r['amount'] for r in self.records if r['type'] == 'Income' and r['date'].startswith(cur_month))
         exp = sum(r['amount'] for r in self.records if r['type'] == 'Expense' and r['date'].startswith(cur_month))
         
-        # Header Section
+        
         ctk.CTkLabel(self.main_frame, text=f"DASHBOARD OVERVIEW", font=("Inter", 12, "bold"), text_color=ACCENT_COLOR).pack(anchor="w", padx=20)
         ctk.CTkLabel(self.main_frame, text=f"{datetime.now().strftime('%B %Y')}", font=("Inter", 32, "bold")).pack(anchor="w", padx=20, pady=(0, 20))
 
-        # Hero Cards
+        
         stats_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
         stats_frame.pack(fill="x", padx=10)
         
@@ -126,7 +116,7 @@ class ModernFinancePro(ctk.CTk):
         self.create_hero_card(stats_frame, "Monthly Outflow", exp, ERROR_COLOR).grid(row=0, column=1, padx=10)
         self.create_hero_card(stats_frame, "Net Liquid", inc-exp, ACCENT_COLOR).grid(row=0, column=2, padx=10)
 
-        # Budget Progress
+       
         if self.settings["budgets"]:
             ctk.CTkLabel(self.main_frame, text="BUDGET THRESHOLDS", font=("Inter", 12, "bold"), text_color=ACCENT_COLOR).pack(anchor="w", padx=20, pady=(40, 10))
             for cat, limit in self.settings["budgets"].items():
@@ -180,7 +170,7 @@ class ModernFinancePro(ctk.CTk):
                                                  selected_color=ACCENT_COLOR, height=40)
         self.type_toggle.pack(pady=30, padx=40, fill="x")
 
-        # Fields with modern spacing
+        
         ctk.CTkLabel(panel, text="Date & Value").pack()
         date_frame = ctk.CTkFrame(panel, fg_color="transparent")
         date_frame.pack()
@@ -222,7 +212,7 @@ class ModernFinancePro(ctk.CTk):
         self.clear_frame()
         ctk.CTkLabel(self.main_frame, text="TRANSACTION LEDGER", font=("Inter", 32, "bold")).pack(pady=20)
         
-        # Futuristic Filter Bar
+     
         f_bar = ctk.CTkFrame(self.main_frame, fg_color=CARD_COLOR, corner_radius=15)
         f_bar.pack(fill="x", padx=20, pady=10)
         
@@ -238,7 +228,7 @@ class ModernFinancePro(ctk.CTk):
         ctk.CTkButton(f_bar, text="FILTER", width=80, fg_color=ACCENT_COLOR, text_color=BG_COLOR, command=self.apply_history_filters).grid(row=0, column=3, padx=10)
         ctk.CTkButton(f_bar, text="EXPORT", width=80, fg_color=SUCCESS_COLOR, command=self.export_to_csv).grid(row=0, column=4, padx=5)
 
-        # Rendering rows as clean cards
+       
         data = self.records
         if filter_query: data = [r for r in data if filter_query.lower() in r.get('desc', "").lower()]
         if filter_type != "All": data = [r for r in data if r['type'] == filter_type]
@@ -336,7 +326,7 @@ class ModernFinancePro(ctk.CTk):
         self.clear_frame()
         ctk.CTkLabel(self.main_frame, text="SYSTEM CONFIGURATION", font=("Inter", 32, "bold")).pack(pady=20)
         
-        # Currency
+      
         box = ctk.CTkFrame(self.main_frame, fg_color=CARD_COLOR, corner_radius=15)
         box.pack(fill="x", padx=20, pady=10)
         ctk.CTkLabel(box, text="GLOBAL CURRENCY SYMBOL").pack(pady=5)
@@ -347,7 +337,7 @@ class ModernFinancePro(ctk.CTk):
         self.custom_curr_entry.pack(pady=5)
         ctk.CTkButton(box, text="UPDATE CURRENCY", fg_color=ACCENT_COLOR, text_color=BG_COLOR, command=self.apply_custom_currency).pack(pady=10)
 
-        # Categories
+        
         cat_box = ctk.CTkFrame(self.main_frame, fg_color=CARD_COLOR, corner_radius=15)
         cat_box.pack(fill="x", padx=20, pady=20)
         ctk.CTkLabel(cat_box, text="EXPENSE CATEGORY REGISTRY").pack(pady=10)
